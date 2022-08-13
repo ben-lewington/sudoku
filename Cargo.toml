@@ -8,7 +8,6 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.61"
-array-init = "2.0.1"
 bounded-integer = {version = "0.5.2", features = ["types"]}
 thiserror = "1.0.32"
 wasm-bindgen = "0.2.81"

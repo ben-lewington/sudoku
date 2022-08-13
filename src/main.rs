@@ -9,8 +9,8 @@ use bounded_integer::BoundedUsize;
 
 pub(crate) mod board;
 pub(crate) mod utils;
+use crate::utils::array::new;
 use board::{diagnostics::Diagnostics, Board};
-use utils::new_arr;
 
 #[macro_export]
 macro_rules! ind {
@@ -76,7 +76,7 @@ pub fn main() -> Result<()> {
     let _u = ind!(N * N, 4);
 
     let csv = "1,2,3,4;3,4,1,2;2,1,4,3;4,3,2,1;";
-    let v = new_arr::<{ N * N * N * N }, usize>(
+    let v = new::<{ N * N * N * N }, usize>(
         parse_str_into_grid::<{ N * N * N * N }, usize>(csv)
             .map(|v| index_bound::<{ N * N }>(v).unwrap()),
     );

@@ -1,4 +1,4 @@
-use crate::utils::new_arr;
+use crate::utils::array::new;
 use anyhow::Result;
 
 use super::{Board, Segment};
@@ -22,34 +22,23 @@ where
 {
     pub fn new(b: &Board<N>) -> Result<Self> {
         Ok(Self {
-            cnts: new_arr(
-                (1..N * N)
-                    .map(|i| b.segment(Segment::row(i)).sum::<usize>())
-                    .chain((1..N * N).map(|i| b.segment(Segment::col(i)).sum::<usize>()))
-                    .chain((1..N * N).map(|i| b.segment(Segment::minor(i)).sum::<usize>())),
-            )?,
-            freqs: new_arr(
-                (1..N * N)
-                    .map(|i| {
-                        new_arr(
-                            (0..=N).map(|v| b.segment(Segment::row(i)).filter(|&w| w == v).count()),
-                        )
+            cnts: new((1..N * N)
+                .map(|i| b.segment(Segment::row(i)).sum::<usize>())
+                .chain((1..N * N).map(|i| b.segment(Segment::col(i)).sum::<usize>()))
+                .chain((1..N * N).map(|i| b.segment(Segment::minor(i)).sum::<usize>())))?,
+            freqs: new((1..N * N)
+                .map(|i| {
+                    new((0..=N).map(|v| b.segment(Segment::row(i)).filter(|&w| w == v).count()))
                         .unwrap()
-                    })
-                    .chain((1..N * N).map(|i| {
-                        new_arr(
-                            (0..=N).map(|v| b.segment(Segment::col(i)).filter(|&w| w == v).count()),
-                        )
+                })
+                .chain((1..N * N).map(|i| {
+                    new((0..=N).map(|v| b.segment(Segment::col(i)).filter(|&w| w == v).count()))
                         .unwrap()
-                    }))
-                    .chain((1..N * N).map(|i| {
-                        new_arr(
-                            (0..=N)
-                                .map(|v| b.segment(Segment::minor(i)).filter(|&w| w == v).count()),
-                        )
+                }))
+                .chain((1..N * N).map(|i| {
+                    new((0..=N).map(|v| b.segment(Segment::minor(i)).filter(|&w| w == v).count()))
                         .unwrap()
-                    })),
-            )?,
+                })))?,
         })
     }
 
