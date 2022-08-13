@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-compatible" content="IE=Edge">
+  <title>Sudoku Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles.css" />
+  <!-- <link data-trunk rel="css" href="styles.css" /> -->
+  <!-- <style> -->
+  <!--   body { -->
+  <!--     color: blue; -->
+  <!--   } -->
+  <!-- </style> -->
+</head>
+
+<body>
+  <div id="root">
+    <div />
+
+    <script type="module">
+      import init, {getState} from "./pkg/sudoku_gen.js"
+      async function main() {
+        await init();
+
+        render(getState());
+      }
+
+      function render(state) {
+        let root = document.getElementById("root");
+        root.innerHTML = "";
+        let data = state.split("\n").map(r => r.trim().split(" | "));
+
+        root.style.display = "inline-grid";
+        root.style.gridTemplate = `repeat(${data.length}, auto) / repeat(${data[0].length}, auto)`
+
+        for (let r = 0; r < data.length; r++) {
+          for (let c = 0; c < data[r].length; c++) {
+            console.log(data[r][c]);
+            let element = document.createElement("a");
+            element.classList.add("field");
+            element.href = "#";
+            element.innerText = data[r][c];
+
+            root.appendChild(element);
+          }
+        }
+      }
+      main();
+    </script>
+
+</body>
+
+</html>

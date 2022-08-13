@@ -1,0 +1,13 @@
+      async function main() {
+        await init();
+
+        render(getState());
+      }
+
+      function render(state) {
+        let root = document.getElementById("root");
+
+        root.innerText = state;
+      }
+      main();
+
