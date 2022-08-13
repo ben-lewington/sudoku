@@ -1,4 +1,5 @@
 #![allow(incomplete_features)]
+#![allow(unused_imports)]
 #![feature(generic_const_exprs)]
 #![feature(slice_swap_unchecked)]
 
@@ -10,7 +11,7 @@ use bounded_integer::BoundedUsize;
 pub(crate) mod board;
 pub(crate) mod utils;
 use crate::utils::array::new;
-use board::{diagnostics::Diagnostics, Board};
+use board::{metadata::Metadata, Board};
 
 #[macro_export]
 macro_rules! ind {
@@ -85,7 +86,7 @@ pub fn main() -> Result<()> {
     println!("{:?} {}", b, b.is_valid_layout());
 
     // let d =
-    // let d = Diagnostics::new(&b);
-
+    let d = Metadata::new(&b)?;
+    println!("{:?}", &d.cnts.iter().map(|&v| v).collect::<Vec<usize>>());
     Ok(())
 }
