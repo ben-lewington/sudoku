@@ -1,4 +1,5 @@
 use crate::{ind, Index};
+pub(crate) mod index;
 pub(crate) mod metadata;
 
 #[derive(Debug)]
@@ -44,7 +45,7 @@ where
         Self { base }
     }
 
-    pub fn get<'a>(&'a self, i: Index<N>) -> &'a usize {
+    pub(crate) fn get<'a>(&'a self, i: Index<N>) -> &'a usize {
         // Safety: use the ind! macro to construct indexes, this will panic
         // if the required bounds aren't met
         unsafe { self.base.get_unchecked(i.at()) }
@@ -74,7 +75,7 @@ where
                     (N * N) * (i + k) + (j + l)
                 }
             })
-            .map(|v| *self.get(ind!(N, v)))
+            .map(|v| *self.get(ind!(N, v).expect("index is in bounds by construction.")))
     }
 
     pub fn is_valid_layout(&self) -> bool {
