@@ -10,48 +10,13 @@ use bounded_integer::BoundedUsize;
 
 pub(crate) mod board;
 pub(crate) mod utils;
+
 use crate::utils::array::new;
-use board::{metadata::Metadata, Board};
-
-#[macro_export]
-macro_rules! ind {
-    ($N:expr, $ind:expr) => {
-        Index::<{ $N }>::std($ind).unwrap()
-    };
-    ($N:expr, $r_ind:expr, $c_ind: expr) => {
-        Index::<{ $N }>::rc($r_ind, $c_ind).unwrap()
-    };
-}
-
-#[derive(Debug)]
-pub enum Index<const N: usize> {
-    Std(usize),
-    RC(usize, usize),
-}
-
-impl<const N: usize> Index<N>
-where
-    [(); N * N * N * N - 1]: Sized,
-    [(); N * N - 1]: Sized,
-{
-    pub fn std(i: usize) -> Result<Self> {
-        Ok(Self::Std(index_bound::<{ N * N * N * N - 1 }>(i)?))
-    }
-
-    pub fn rc(r: usize, c: usize) -> Result<Self> {
-        Ok(Self::RC(
-            index_bound::<{ N * N - 1 }>(r)?,
-            index_bound::<{ N * N - 1 }>(c)?,
-        ))
-    }
-
-    pub fn at(&self) -> usize {
-        match self {
-            Self::Std(i) => *i,
-            Self::RC(r, c) => (N * N) * r + c,
-        }
-    }
-}
+use board::{
+    index::{index_bound, Index},
+    metadata::Metadata,
+    Board,
+};
 
 pub(crate) fn parse_str_into_grid<const N: usize, T: FromStr<Err = impl std::fmt::Debug>>(
     input: &'static str,
@@ -66,15 +31,9 @@ pub(crate) fn parse_str_into_grid<const N: usize, T: FromStr<Err = impl std::fmt
         })
 }
 
-pub fn index_bound<const N: usize>(v: usize) -> Result<usize> {
-    let v = BoundedUsize::<0, N>::new(v)
-        .with_context(|| format!("number {} is not between 0 and {}", v, N))?;
-    Ok(usize::from(v))
-}
-
 pub fn main() -> Result<()> {
     const N: usize = 2;
-    let _u = ind!(N * N, 4);
+    let _u = ind!(N * N, 4)?;
 
     let csv = "1,2,3,4;3,4,1,2;2,1,4,3;4,3,2,1;";
     let v = new::<{ N * N * N * N }, usize>(
@@ -87,6 +46,17 @@ pub fn main() -> Result<()> {
 
     // let d =
     let d = Metadata::new(&b)?;
+    println!("{:?}", &d);
     println!("{:?}", &d.cnts.iter().map(|&v| v).collect::<Vec<usize>>());
+    // println!(
+    //     "{:?}",
+    //     &d.freqs
+    //         .iter()
+    //         .enumerate()
+    //         .flat_map(|&(i, v)| {
+    //             v.iter().enumerate().map(move |&(j, v)| (i))
+    //         }
+    //         .collect::<Vec<(usize, usize, usize)>>()
+    // );
     Ok(())
 }
