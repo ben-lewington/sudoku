@@ -39,6 +39,13 @@ where
         ))
     }
 
+    pub fn grid_ref(&self) -> (usize, usize) {
+        match self {
+            Self::Std(i) => (i / (N * N), i % (N * N)),
+            Self::RC(i, j) => (*i, *j),
+        }
+    }
+
     pub fn at(&self) -> usize {
         match self {
             Self::Std(i) => *i,

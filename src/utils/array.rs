@@ -98,7 +98,7 @@ pub(crate) fn new<const N: usize, T>(mut it: impl Iterator<Item = T>) -> Result<
                         ));
                     }
                     _ => {
-                        // leak the panic guard; the array can is initialised
+                        // leak the panic guard; the array is initialised
                         std::mem::forget(panic_guard);
                         break;
                     }

@@ -18,19 +18,6 @@ use board::{
     Board,
 };
 
-pub(crate) fn parse_str_into_grid<const N: usize, T: FromStr<Err = impl std::fmt::Debug>>(
-    input: &'static str,
-) -> impl Iterator<Item = T> {
-    input
-        .split(';')
-        .filter(|r| r.trim().len() != 0)
-        .flat_map(|r| {
-            r.split(',')
-                .filter(|v| v.trim().len() != 0)
-                .map(|v| v.trim().parse().unwrap())
-        })
-}
-
 pub fn main() -> Result<()> {
     const N: usize = 2;
     let _u = ind!(N * N, 4)?;
@@ -48,15 +35,47 @@ pub fn main() -> Result<()> {
     let d = Metadata::new(&b)?;
     println!("{:?}", &d);
     println!("{:?}", &d.cnts.iter().map(|&v| v).collect::<Vec<usize>>());
-    // println!(
-    //     "{:?}",
-    //     &d.freqs
-    //         .iter()
-    //         .enumerate()
-    //         .flat_map(|&(i, v)| {
-    //             v.iter().enumerate().map(move |&(j, v)| (i))
-    //         }
-    //         .collect::<Vec<(usize, usize, usize)>>()
-    // );
+    println!(
+        "{:?}\n{}",
+        &d.freqs
+            .iter()
+            .enumerate()
+            .map(|(i, _)| (i, i / 3, i % 3))
+            .collect::<Vec<(usize, usize, usize)>>(),
+        &d.freqs
+            .iter()
+            .enumerate()
+            .flat_map(|(i, v)| {
+                dbg!(i, i / (N * N));
+                let f = match i / (N * N) {
+                    0 => "row",
+                    1 => "column",
+                    2 => "minor",
+                    _ => "_",
+                };
+                v.iter().enumerate().map(move |(j, v)| {
+                    format!("{}-th {} -> {} occurences of {}", i % (N * N), f, *v, j)
+                })
+            })
+            .collect::<Vec<String>>()
+            .join("\n")
+    );
+    (0..N * N * N * N).for_each(|i| {
+        let x = Index::<N>::std(i).unwrap();
+        dbg!(&x, &x.at(), &x.grid_ref());
+    });
     Ok(())
+}
+
+pub(crate) fn parse_str_into_grid<const N: usize, T: FromStr<Err = impl std::fmt::Debug>>(
+    input: &'static str,
+) -> impl Iterator<Item = T> {
+    input
+        .split(';')
+        .filter(|r| r.trim().len() != 0)
+        .flat_map(|r| {
+            r.split(',')
+                .filter(|v| v.trim().len() != 0)
+                .map(|v| v.trim().parse().unwrap())
+        })
 }
