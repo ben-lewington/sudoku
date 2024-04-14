@@ -22,7 +22,7 @@ pub fn main() -> Result<()> {
     const N: usize = 2;
     let _u = ind!(N * N, 4)?;
 
-    let csv = "1,2,3,4;3,4,1,2;2,1,4,3;4,3,2,1;";
+    let csv: &'static str = "1,2,3,4;3,4,1,2;2,1,4,3;4,3,2,1;";
     let v = new::<{ N * N * N * N }, usize>(
         parse_str_into_grid::<{ N * N * N * N }, usize>(csv)
             .map(|v| index_bound::<{ N * N }>(v).unwrap()),
